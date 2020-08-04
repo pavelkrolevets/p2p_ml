@@ -1,3 +1,4 @@
+#[macro_use]
 extern crate termion;
 
 mod  rpc;
@@ -5,16 +6,19 @@ mod  rpc;
 use std::fmt::Error;
 use termion::input::TermRead;
 use std::io::{Write, stdout, stdin};
-use tenx_solution::parse_stdin;
 use std::thread::sleep;
 use std::time::{SystemTime, UNIX_EPOCH, Duration};
 
+pub fn parse_stdin(args: Vec<&str>) -> Result<(), Error>{
 
+    match args[0] {
+        "run" => rpc::run_rpc_server(),
+        _ => println!("Please input a correct command.")
+    };
+    Ok(())
+}
 
 fn main() {
-    rpc::run_rpc_server();
-
-
     let stdout = stdout();
     let mut stdout = stdout.lock();
     let stdin = stdin();
