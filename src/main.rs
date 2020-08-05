@@ -1,7 +1,16 @@
-#[macro_use]
-extern crate termion;
+#![feature(plugin)]
+#![feature(decl_macro, proc_macro_hygiene)]
+#[macro_use] extern crate rocket_contrib;
+#[macro_use] extern crate diesel;
+#[macro_use] extern crate rocket;
+#[macro_use] extern crate serde_derive;
+extern crate r2d2;
+extern crate r2d2_diesel;
+
 
 mod  rpc;
+mod  api;
+mod  db;
 
 use std::fmt::Error;
 use termion::input::TermRead;
@@ -12,7 +21,7 @@ use std::time::{SystemTime, UNIX_EPOCH, Duration};
 pub fn parse_stdin(args: Vec<&str>) -> Result<(), Error>{
 
     match args[0] {
-        "run" => rpc::run_rpc_server(),
+        "run" => api::run_rpc_server(),
         _ => println!("Please input a correct command.")
     };
     Ok(())

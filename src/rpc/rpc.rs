@@ -8,7 +8,6 @@ use serde_json::{Deserializer, Value};
 use std::borrow::Borrow;
 use std::borrow::Cow;
 use serde::{Serialize, Deserialize};
-use termion::terminal_size_pixels;
 use std::ops::Deref;
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -19,6 +18,7 @@ struct Response {
 pub fn handle_connection(mut stream: TcpStream) {
     let mut buffer = [0; 512];
     stream.read(&mut buffer).unwrap();
+    println!("Request: {}", String::from_utf8_lossy(&buffer[..]));
 
     let get = b"GET / HTTP/1.1\r\n";
     let sleep = b"GET /sleep HTTP/1.1\r\n";
@@ -53,7 +53,6 @@ pub fn handle_connection(mut stream: TcpStream) {
             res: "Some result".to_string()
         };
         let result = serde_json::to_string(&resp).unwrap();
-
         ("HTTP/1.1 200 OK\r\n\r\n", result)
     } else {
         let resp = Response{
@@ -64,7 +63,7 @@ pub fn handle_connection(mut stream: TcpStream) {
     };
 
     // let contents = fs::read_to_string(filename).unwrap();
-    let response = format!("{}{}", status_line, result);
+    let response = format!("{}{}", status_line, r);
     stream.write(response.as_bytes()).unwrap();
     stream.flush().unwrap();
 }
